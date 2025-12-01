@@ -15,7 +15,7 @@ const TodoList = () => {
   const handleAddList = (index) => {
     if (listInputs[index] && listInputs[index].trim() !== '') {
       const newTodos = [...todos];
-      newTodos[index].items.push(listInputs[index]);
+      newTodos[index].items.push({ text: listInputs[index], done: false });
       setTodos(newTodos);
       setListInputs({ ...listInputs, [index]: '' });
     }
@@ -28,6 +28,17 @@ const TodoList = () => {
     newTodos.splice(index, 1);
     setTodos(newTodos);
   };
+  const handleDeleteListItem = (todoIndex, itemIndex) => {
+    const newTodos = [...todos];
+    newTodos[todoIndex].items.splice(itemIndex, 1);
+    setTodos(newTodos);
+  };
+  const handleToggleDone = (todoIndex, itemIndex) => {
+    const newTodos = [...todos];
+    newTodos[todoIndex].items[itemIndex].done = !newTodos[todoIndex].items[itemIndex].done;
+    setTodos(newTodos);
+  };
+
 
 
   return (
@@ -50,12 +61,16 @@ const TodoList = () => {
           <div key={index} className="todo-card">
             <div className="heading_todo">
               <h3 className="todo-heading">{todo.heading}</h3>
-              <button className="delete-heading-button" onClick={() => handleDeleteTodo(index)}>Delete Heading</button>
+              <button className="delete-heading-button" onClick={() => handleDeleteTodo(index)}>Delete List</button>
           </div>
           <ul className="todo-items">
             {todo.items.map((item, itemIndex) => (
               <li key={itemIndex} className="todo_inside_list">
-                <p>{item}</p>
+                <p style={{ textDecoration: item.done ? 'line-through' : 'none' }} className="item-text">{item.text}</p>
+                <div className="item-buttons">
+                  <button className="delete-button" onClick={() => handleDeleteListItem(index, itemIndex)}>Delete</button>
+                  <button className="done-button" onClick={() => handleToggleDone(index, itemIndex)}>{item.done ? 'Undo' : 'Done'}</button>
+                </div>
               </li>
             ))}
           </ul>
